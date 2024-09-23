@@ -1,0 +1,109 @@
+-- Tabla Usuario (sin cambios)
+CREATE TABLE Usuario (
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_usuario VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
+    tipo_usuario ENUM('cliente', 'arrendador', 'admin') NOT NULL
+);
+
+-- Tabla Persona (sin cambios)
+CREATE TABLE Persona (
+    id_persona INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT UNIQUE,
+    nombre VARCHAR(255) NOT NULL,
+    apellido VARCHAR(255) NOT NULL,
+    dni VARCHAR(20) NOT NULL UNIQUE,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Tabla Arrendador (sin cambios)
+CREATE TABLE Arrendador (
+    id_arrendador INT PRIMARY KEY,
+    FOREIGN KEY (id_arrendador) REFERENCES Persona(id_persona)
+);
+
+-- Tabla Cliente (sin cambios)
+CREATE TABLE Cliente (
+    id_cliente INT PRIMARY KEY,
+    FOREIGN KEY (id_cliente) REFERENCES Persona(id_persona)
+);
+
+-- Tabla Cabana (sin cambios)
+CREATE TABLE Cabana (
+    id_cabana INT PRIMARY KEY AUTO_INCREMENT,
+    id_arrendador INT NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    capacidad INT NOT NULL,
+    costo_por_noche DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_arrendador) REFERENCES Arrendador(id_arrendador)
+);
+
+-- Tabla Actividad (sin cambios)
+CREATE TABLE Actividad (
+    id_actividad INT PRIMARY KEY AUTO_INCREMENT,
+    id_arrendador INT NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion TEXT NOT NULL,
+    costo DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_arrendador) REFERENCES Arrendador(id_arrendador)
+);
+
+-- Tabla Paquete (modificada)
+CREATE TABLE Paquete (
+    id_paquete INT PRIMARY KEY AUTO_INCREMENT,
+    id_arrendador INT NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    noches INT,
+    precio_base DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_arrendador) REFERENCES Arrendador(id_arrendador)
+);
+
+-- Tabla Paquete_Cabana (sin cambios)
+CREATE TABLE Paquete_Cabana (
+    id_paquete INT,
+    id_cabana INT,
+    PRIMARY KEY (id_paquete, id_cabana),
+    FOREIGN KEY (id_paquete) REFERENCES Paquete(id_paquete),
+    FOREIGN KEY (id_cabana) REFERENCES Cabana(id_cabana)
+);
+
+-- Tabla Paquete_Actividad (sin cambios)
+CREATE TABLE Paquete_Actividad (
+    id_paquete INT,
+    id_actividad INT,
+    PRIMARY KEY (id_paquete, id_actividad),
+    FOREIGN KEY (id_paquete) REFERENCES Paquete(id_paquete),
+    FOREIGN KEY (id_actividad) REFERENCES Actividad(id_actividad)
+);
+
+-- Tabla Reserva (modificada)
+CREATE TABLE Reserva (
+    id_reserva INT PRIMARY KEY AUTO_INCREMENT,
+    id_cliente INT NOT NULL,
+    id_paquete INT,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    precio_final DECIMAL(10, 2) NOT NULL,
+    estado ENUM('pendiente', 'confirmada', 'cancelada') NOT NULL DEFAULT 'pendiente',
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
+    FOREIGN KEY (id_paquete) REFERENCES Paquete(id_paquete)
+);
+
+-- Tabla Reserva_Cabana (reincorporada)
+CREATE TABLE Reserva_Cabana (
+    id_reserva INT,
+    id_cabana INT,
+    PRIMARY KEY (id_reserva, id_cabana),
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva),
+    FOREIGN KEY (id_cabana) REFERENCES Cabana(id_cabana)
+);
+
+-- Tabla Reserva_Actividad (reincorporada)
+CREATE TABLE Reserva_Actividad (
+    id_reserva INT,
+    id_actividad INT,
+    PRIMARY KEY (id_reserva, id_actividad),
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva),
+    FOREIGN KEY (id_actividad) REFERENCES Actividad(id_actividad)
+);

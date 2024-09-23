@@ -1,0 +1,65 @@
+myproject/
+├── myproject/                
+│   ├── __init__.py           
+│   ├── settings/             
+│   │   ├── __init__.py
+│   │   ├── base.py           
+│   │   ├── development.py    
+│   │   └── production.py     
+│   ├── urls.py               
+│   ├── wsgi.py               
+│   └── asgi.py               
+├── manage.py                 
+├── requirements.txt          
+├── .env                      
+├── .gitignore                
+├── apps/                     
+│   ├── usuarios/             # App para gestión de usuarios
+│   │   ├── __init__.py
+│   │   ├── admin.py          
+│   │   ├── apps.py           
+│   │   ├── models.py         
+│   │   ├── views.py          
+│   │   ├── urls.py           
+│   │   ├── forms.py          
+│   │   ├── tests.py          
+│   │   ├── templates/        
+│   │   │   └── usuarios/
+│   │   └── static/           
+│   ├── cabanas/              # App para gestión de cabañas
+│   │   ├── __init__.py
+│   │   ├── admin.py          
+│   │   ├── apps.py           
+│   │   ├── models.py         
+│   │   ├── views.py          
+│   │   ├── urls.py           
+│   │   ├── forms.py          
+│   │   ├── tests.py          
+│   │   ├── templates/        
+│   │   │   └── cabanas/
+│   │   └── static/           
+│   ├── actividades/          # App para gestión de actividades
+│   │   ├── __init__.py
+│   │   ├── admin.py          
+│   │   ├── apps.py           
+│   │   ├── models.py         
+│   │   ├── views.py          
+│   │   ├── urls.py           
+│   │   ├── forms.py          
+│   │   ├── tests.py          
+│   │   ├── templates/        
+│   │   │   └── actividades/
+│   │   └── static/           
+│   └── reservas/             # App para gestión de reservas
+│       ├── __init__.py
+│       ├── admin.py          
+│       ├── apps.py           
+│       ├── models.py         
+│       ├── views.py          
+│       ├── urls.py           
+│       ├── forms.py          
+│       ├── tests.py          
+│       ├── templates/        
+│       │   └── reservas/
+│       └── static/           
+└── static/                   
