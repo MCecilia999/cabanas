@@ -1,0 +1,102 @@
+https://dbdiagram.io/d/66f07ebca0828f8aa6abebea
+
+
+
+Table Usuario {
+  id_usuario integer [primary key]
+  nombre_usuario varchar [unique]
+  email varchar [unique]
+  contrasena varchar
+  tipo_usuario ENUM
+}
+
+Table Persona {
+  id_persona integer [primary key]
+  id_usuario integer [unique]
+  nombre varchar
+  apellido varchar
+  dni varchar [unique]
+}
+
+Table Arrendador {
+  id_arrendador integer [primary key]
+}
+
+Table Cliente {
+  id_cliente integer [primary key]
+}
+
+Table Cabana {
+  id_cabana integer [primary key]
+  id_arrendador integer
+  nombre varchar
+  capacidad integer
+  costo_por_noche decimal(10,2)
+}
+
+Table Actividad {
+  id_actividad integer [primary key]
+  id_arrendador integer
+  nombre varchar
+  descripcion text
+  costo decimal(10,2)
+}
+
+Table Paquete {
+  id_paquete integer [primary key]
+  id_arrendador integer
+  nombre varchar
+  noches integer
+  precio_base decimal(10,2)
+}
+
+Table Paquete_Cabana {
+  id_paquete integer
+  id_cabana integer
+  primary key (id_paquete, id_cabana)
+}
+
+Table Paquete_Actividad {
+  id_paquete integer
+  id_actividad integer
+  primary key (id_paquete, id_actividad)
+}
+
+Table Reserva {
+  id_reserva integer [primary key]
+  id_cliente integer
+  id_paquete integer
+  fecha_inicio date
+  fecha_fin date
+  precio_final decimal(10,2)
+  estado ENUM
+}
+
+Table Reserva_Cabana {
+  id_reserva integer
+  id_cabana integer
+  primary key (id_reserva, id_cabana)
+}
+
+Table Reserva_Actividad {
+  id_reserva integer
+  id_actividad integer
+  primary key (id_reserva, id_actividad)
+}
+
+Ref: Persona.id_usuario > Usuario.id_usuario
+Ref: Arrendador.id_arrendador - Persona.id_persona
+Ref: Cliente.id_cliente - Persona.id_persona
+Ref: Cabana.id_arrendador > Arrendador.id_arrendador
+Ref: Actividad.id_arrendador > Arrendador.id_arrendador
+Ref: Paquete.id_arrendador > Arrendador.id_arrendador
+Ref: Paquete_Cabana.id_paquete > Paquete.id_paquete
+Ref: Paquete_Cabana.id_cabana > Cabana.id_cabana
+Ref: Paquete_Actividad.id_paquete > Paquete.id_paquete
+Ref: Paquete_Actividad.id_actividad > Actividad.id_actividad
+Ref: Reserva.id_cliente > Cliente.id_cliente
+Ref: Reserva.id_paquete > Paquete.id_paquete
+Ref: Reserva_Cabana.id_reserva > Reserva.id_reserva
+Ref: Reserva_Cabana.id_cabana > Cabana.id_cabana
+Ref: Reserva_Actividad.id_reserva > Reserva.id_reserva
+Ref: Reserva_Actividad.id_actividad > Actividad.id_actividad

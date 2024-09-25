@@ -110,3 +110,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Listas de seguridad y otros ajustes opcionales que se pueden agregar:
 X_FRAME_OPTIONS = 'DENY'  # Prevención de Clickjacking
 SECURE_BROWSER_XSS_FILTER = True  # Protección contra XSS
+
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+AUTH_USER_MODEL = 'usuarios.Usuario'
