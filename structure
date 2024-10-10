@@ -25,6 +25,10 @@ cabanas/
 │   │   ├── tests.py          
 │   │   ├── templates/        
 │   │   │   └── usuarios/
+│   │   │       └── home.html
+│   │   │       └── login.html
+│   │   │       └── profile.html
+│   │   │       └── registro.html
 │   │   └── static/           
 │   ├── cabanas/              # App para gestión de cabañas
 │   │   ├── __init__.py
@@ -37,6 +41,9 @@ cabanas/
 │   │   ├── tests.py          
 │   │   ├── templates/        
 │   │   │   └── cabanas/
+│   │   │       ├── agregar_cabana.html
+│   │   │       ├── detalle_cabana.html
+│   │   │       └── lista_cabanas.html
 │   │   └── static/           
 │   ├── actividades/          # App para gestión de actividades
 │   │   ├── __init__.py
@@ -62,4 +69,6 @@ cabanas/
 │       ├── templates/        
 │       │   └── reservas/
 │       └── static/           
-└── static/                   
+└── templates/
+    └── base.html
+

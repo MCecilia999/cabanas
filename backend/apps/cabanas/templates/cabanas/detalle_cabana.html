@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ cabana.nombre }}</h2>
+<p>Capacidad: {{ cabana.capacidad }}</p>
+<p>Costo por noche: ${{ cabana.costo_por_noche }}</p>
+<p>Arrendador: {{ cabana.arrendador.persona.nombre }} {{ cabana.arrendador.persona.apellido }}</p>
+{% endblock %}

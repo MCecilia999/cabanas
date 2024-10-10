@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Cabañas</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Capacidad</th>
+            <th>Costo por noche</th>
+            <th>Arrendador</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cabana in cabanas %}
+        <tr>
+            <td>{{ cabana.nombre }}</td>
+            <td>{{ cabana.capacidad }}</td>
+            <td>${{ cabana.costo_por_noche }}</td>
+            <td>{{ cabana.arrendador.persona.nombre }} {{ cabana.arrendador.persona.apellido }}</td>
+            <td><a href="{% url 'detalle_cabana' cabana.id %}">Ver detalles</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'agregar_cabana' %}">Agregar nueva cabaña</a>
+{% endblock %}
