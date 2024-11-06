@@ -1,13 +1,14 @@
 # apps/usuarios/urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import UsuarioViewSet, PersonaViewSet
 
-from django.urls import path
-from . import views
+# Creamos un enrutador para gestionar las URLs automáticamente
+router = DefaultRouter()
+router.register(r'usuarios', UsuarioViewSet)
+router.register(r'personas', PersonaViewSet)
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('login/', views.login_view, name='login'),
-    path('registro/', views.registro_view, name='registro'),
-    path('logout/', views.logout_view, name='logout'),
-    path('profile/', views.profile_view, name='profile'),
+    path('', include(router.urls)),  # Incluimos todas las rutas generadas por el router
 ]
 

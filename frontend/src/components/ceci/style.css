@@ -1,0 +1,145 @@
+:root {
+    --primary: #36ab34;
+    --primary-dark: #18442a;
+    --accent: #7a3711;
+    --complementary: #8B4513;
+    --light: hsl(20, 18%, 87%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light);
+}
+
+.sidebar-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 60px;
+    background-color: var(--primary-dark);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar:hover {
+    width: 260px;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary);
+}
+
+.logo {
+    width: 52px;
+    height: 52px;
+}
+
+.sidebar-menu {
+    flex-grow: 1;
+    padding: 1rem 0;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.menu-link:hover {
+    background-color: var(--primary);
+}
+
+.menu-link i {
+    width: 20px;
+    margin-right: 1rem;
+}
+
+.menu-text {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.sidebar:hover .menu-text {
+    opacity: 1;
+}
+
+.submenu {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    width: 200px;
+    background-color: var(--primary);
+    display: none;
+    padding: 0.5rem 0;
+    z-index: 1000;
+}
+
+.menu-item:hover > .submenu {
+    display: block;
+}
+
+.submenu-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.submenu-link:hover {
+    background-color: var(--accent);
+}
+
+.sidebar-footer {
+    padding: 1rem 0;
+    border-top: 1px solid var(--accent);
+}
+
+.content {
+    flex-grow: 1;
+    padding: 2rem;
+    background-color: var(--light);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}

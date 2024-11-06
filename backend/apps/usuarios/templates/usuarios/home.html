@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <h1>Bienvenido a tu página de inicio</h1>
-  <p>Hola, {{ user.nombre_usuario }}!</p>
-  <a href="{% url 'profile' %}">Ver perfil</a>
-  <a href="{% url 'logout' %}">Cerrar sesión</a>
-{% endblock %}

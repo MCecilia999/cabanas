@@ -1,68 +1,80 @@
-#apps/usuarios/models.py
-
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
-class UsuarioManager(BaseUserManager):
-    def create_user(self, email, nombre_usuario, password=None, **extra_fields):
+# Custom manager for the Usuario model
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('El Email es obligatorio')
         email = self.normalize_email(email)
-        user = self.model(email=email, nombre_usuario=nombre_usuario, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, nombre_usuario, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('tipo_usuario', 'admin')
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self.create_user(email, nombre_usuario, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
+    id_usuario = models.AutoField(primary_key=True)
     nombre_usuario = models.CharField(max_length=255, unique=True)
-    tipo_usuario = models.CharField(max_length=10, choices=[
+    email = models.EmailField(unique=True)
+    tipo_usuario = models.CharField(max_length=20, choices=[
         ('cliente', 'Cliente'),
         ('arrendador', 'Arrendador'),
-        ('admin', 'Administrador')
+        ('admin', 'Administrador'),
     ])
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=timezone.now)
 
-    objects = UsuarioManager()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre_usuario']
+    REQUIRED_FIELDS = ['nombre_usuario', 'tipo_usuario']
+
+    class Meta:
+        db_table = 'Usuario'
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
 
     def __str__(self):
-        return self.nombre_usuario
+        return self.email
 
 class Persona(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, null=True, blank=True)
+    id_persona = models.AutoField(primary_key=True)
+    id_usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=255)
     apellido = models.CharField(max_length=255)
-    dni = models.CharField(max_length=20, unique=True, blank=True, null=True)  # Modified this line
+    dni = models.CharField(max_length=20, unique=True, null=True, blank=True)
+
+    class Meta:
+        db_table = 'Persona'
+        verbose_name = 'Persona'
+        verbose_name_plural = 'Personas'
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
 
 class Arrendador(models.Model):
-    persona = models.OneToOneField(Persona, on_delete=models.CASCADE, primary_key=True)
+    id_arrendador = models.OneToOneField(Persona, on_delete=models.CASCADE, primary_key=True)
+
+    class Meta:
+        db_table = 'Arrendador'
+        verbose_name = 'Arrendador'
+        verbose_name_plural = 'Arrendadores'
 
     def __str__(self):
-        return f"Arrendador: {self.persona.nombre} {self.persona.apellido}"
+        return f"Arrendador: {self.id_arrendador}"
 
 class Cliente(models.Model):
-    persona = models.OneToOneField(Persona, on_delete=models.CASCADE, primary_key=True)
+    id_cliente = models.OneToOneField(Persona, on_delete=models.CASCADE, primary_key=True)
+
+    class Meta:
+        db_table = 'Cliente'
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
 
     def __str__(self):
-        return f"Cliente: {self.persona.nombre} {self.persona.apellido}"
+        return f"Cliente: {self.id_cliente}"

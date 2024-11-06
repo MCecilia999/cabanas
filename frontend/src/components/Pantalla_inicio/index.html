@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista de Cabaña</title>
+    <link rel="stylesheet" href="Stiles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="product-gallery">
+            <div class="thumbnails">
+                <img src="img/cabaña1/img1.jpg" alt="Thumbnail 1" class="thumb active" onclick="changeImage(0)">
+                <img src="img/cabaña1/img2.jpg" alt="Thumbnail 2" class="thumb" onclick="changeImage(1)">
+                <img src="img/cabaña1/img3.jpg" alt="Thumbnail 3" class="thumb" onclick="changeImage(2)">
+                <img src="img/cabaña1/img4.jpg" alt="Thumbnail 4" class="thumb" onclick="changeImage(3)">
+                <img src="img/cabaña1/img5.jpg" alt="Thumbnail 4" class="thumb" onclick="changeImage(3)">
+                <img src="img/cabaña1/img6.jpg" alt="Thumbnail 4" class="thumb" onclick="changeImage(3)">
+            </div>
+            <div class="main-image">
+                <button class="nav-btn prev" onclick="prevImage()">&lt;</button>
+                <img src="img/cabaña1/img1.jpg" alt="Imagen Principal" id="mainImage">
+                <button class="nav-btn next" onclick="nextImage()">&gt;</button>
+            </div>
+        </div>
+
+        <div class="product-info">
+            <div class="booking-widget">
+                <div class="price">
+                    <span class="amount">$2,000 MXN</span>
+                    <span class="period">noche</span>
+                </div>
+
+                <div class="dates">
+                    <div class="check-in">
+                        <label>ENTTRADA</label>
+                        <input type="date" id="checkIn">
+                    </div>
+                    <div class="check-out">
+                        <label>SALIDA</label>
+                        <input type="date" id="checkOut">
+                    </div>
+                </div>
+
+                <div class="guests">
+                    <label>HUÉSPEDES</label>
+                    <select id="guestCount">
+                        <option>1 huésped</option>
+                        <option>2 huéspedes</option>
+                        <option>3 huéspedes</option>
+                        <option>4 huéspedes</option>
+                        <option>5 huéspedes</option>
+                        <option>6 huéspedes</option>
+                        <option>7 huéspedes</option>
+                    </select>
+                </div>
+
+                <button class="reserve-btn">Reservar</button>
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>$2,000 MXN x 5 noches</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total</span>
+                        <span>$10,000 MXN</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="amenities">
+        <h2>Servicios Incluidos</h2>
+        <div class="amenities-grid">
+            <div class="amenity">
+                <img src="img/icons/cosina.png" alt="Lago">
+                <span>Cosina equipada</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/barra.png" alt="WiFi">
+                <span>Barra desayunadora</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/chimenea.png" alt="Mascotas">
+                <span>Chimenea</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/sala.png" alt="Bañera">
+                <span>Sala</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/television.png" alt="Patio">
+                <span>Pantalla con Sky</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/lenia.png" alt="Cocina">
+                <span>Leña para chimenea</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/agua.png" alt="Estacionamiento">
+                <span>Agua caliente</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/asador.png" alt="TV">
+                <span>Asador</span>
+            </div>
+            <div class="amenity">
+                <img src="img/icons/coche.png" alt="Balcón">
+                <span>Estacionamiento en las instalaciones</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

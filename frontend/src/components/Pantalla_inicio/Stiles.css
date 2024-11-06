@@ -1,0 +1,202 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #000;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+}
+
+/* Gallery Styles */
+.product-gallery {
+    display: flex;
+    gap: 20px;
+}
+
+.thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.thumb.active {
+    border-color: #FF385C;
+}
+
+.main-image {
+    position: relative;
+    flex-grow: 1;
+}
+
+.main-image img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-btn.prev { left: 10px; }
+.nav-btn.next { right: 10px; }
+
+/* Booking Widget Styles */
+.booking-widget {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.price {
+    margin-bottom: 20px;
+}
+
+.amount {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.period {
+    color: #666;
+}
+
+.dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.dates input,
+.guests select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+
+.reserve-btn {
+    width: 100%;
+    padding: 14px;
+    background: #617321;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 20px 0;
+}
+
+.reserve-btn:hover{
+    background-color: #37410f;
+}
+
+.no-charge {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.price-breakdown {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.price-row.total {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+    font-weight: 600;
+}
+
+/* Amenities Styles */
+.amenities {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.amenities h2 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.amenity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.amenity img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .product-gallery {
+        flex-direction: column;
+    }
+
+    .thumbnails {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .main-image img {
+        height: 300px;
+    }
+}

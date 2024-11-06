@@ -1,46 +1,67 @@
+# backend/myproject/settings/base.py
 import os
 from pathlib import Path
 
-# Ruta base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Clave secreta utilizada para la encriptación
-SECRET_KEY = os.getenv('SECRET_KEY', 'clave-secreta-segura')
+SECRET_KEY = 'tu_clave_secreta_aqui'
 
-# Configuración de Aplicaciones Instaladas
 INSTALLED_APPS = [
-    'django.contrib.admin',          # Panel de administración
-    'django.contrib.auth',           # Sistema de autenticación
-    'django.contrib.contenttypes',   # Content types para permisos y más
-    'django.contrib.sessions',       # Manejo de sesiones
-    'django.contrib.messages',       # Sistema de mensajes
-    'django.contrib.staticfiles',    # Manejo de archivos estáticos
-    # Apps personalizadas
-    'apps.usuarios',                 # App de gestión de usuarios
-    'apps.cabanas',                  # App de gestión de cabañas
-    'apps.actividades',              # App de gestión de actividades
-    'apps.reservas',                 # App de gestión de reservas
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    'apps.usuarios.apps.UsuariosConfig',
 ]
 
-# Middleware que procesa cada petición/respuesta
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',    # Seguridad básica
-    'django.contrib.sessions.middleware.SessionMiddleware', # Manejo de sesiones
-    'django.middleware.common.CommonMiddleware',        # Configuración general de middleware
-    'django.middleware.csrf.CsrfViewMiddleware',        # Protección contra CSRF
-    'django.contrib.auth.middleware.AuthenticationMiddleware', # Manejo de autenticación
-    'django.contrib.messages.middleware.MessageMiddleware', # Manejo de mensajes
-    'django.middleware.clickjacking.XFrameOptionsMiddleware', # Prevención de Clickjacking
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
 ]
 
-# Configuración de URLs raíz
+
+
 ROOT_URLCONF = 'myproject.urls'
 
-# Configuración de plantillas
+
+WSGI_APPLICATION = 'myproject.wsgi.application'
+
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS':{'min_length': 8,}},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+LANGUAGE_CODE = 'es-es'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'usuarios.Usuario'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -53,66 +74,86 @@ TEMPLATES = [
     },
 ]
 
-# Sistema de WSGI para despliegue
-WSGI_APPLICATION = 'myproject.wsgi.application'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+REACT_APP_DIR = os.path.join(BASE_DIR, '..', 'frontend')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
 
-# Configuración de la base de datos (se especifica en development y production)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Especifica que se usará MySQL
-        'NAME': 'bd_cabanas_dj',               # Nombre de la base de datos
-        'USER': 'root',                        # Usuario de la base de datos
-        'PASSWORD': '2014',                    # Contraseña del usuario
-        'HOST': 'localhost',                   # Host donde se encuentra la base de datos
-        'PORT': '3306',                        # Puerto de MySQL, el predeterminado es 3306
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  # Configura el modo estricto
-        }
-    }
-}
-
-
-# Configuración de contraseñas (función hash)
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {'min_length': 8},
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
 ]
 
-# Configuración Internacional
-LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
+REACT_APP_BUILD_DIR = os.path.join(REACT_APP_DIR, 'build')
 
-# Configuración de archivos estáticos
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-# Configuración de archivos media (subidos por usuarios)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Configuración de correos (se detalla en development y production)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Listas de seguridad y otros ajustes opcionales que se pueden agregar:
-X_FRAME_OPTIONS = 'DENY'  # Prevención de Clickjacking
-SECURE_BROWSER_XSS_FILTER = True  # Protección contra XSS
+if os.path.exists(REACT_APP_BUILD_DIR):
+    STATICFILES_DIRS = [os.path.join(REACT_APP_BUILD_DIR, 'static')]
+    TEMPLATES[0]['DIRS'] = [REACT_APP_BUILD_DIR] + TEMPLATES[0]['DIRS']
+   
 
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'login'
-AUTH_USER_MODEL = 'usuarios.Usuario'
+CORS_ALLOWED_ORIGINS = [
+    host.strip() if host.startswith('http') else f"https://{host.strip()}" 
+    for host in os.environ.get('CORS_ALLOWED_ORIGINS', 'axolpos-frontend.fly.dev').split(',')
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+
+
+# DRF settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    },
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+
+    'UNAUTHENTICATED_USER': None,
+
+}
+
+def configure_token_view(_):
+    from rest_framework_simplejwt.views import TokenObtainPairView
+    TokenObtainPairView.permission_classes = []
+
+from django.core.signals import setting_changed
+setting_changed.connect(configure_token_view)
+
+
+# JWT settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id_usuario',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
