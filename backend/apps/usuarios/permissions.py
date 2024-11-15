@@ -134,3 +134,5 @@ class RegistroPermission(permissions.BasePermission):
             return True
         # Para otras operaciones, requerir autenticación
         return request.user and request.user.is_authenticated
+
+

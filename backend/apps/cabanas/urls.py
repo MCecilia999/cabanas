@@ -1,8 +1,12 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 
+router = DefaultRouter()
+router.register(r'cabanas', views.CabanaViewSet)
+router.register(r'ubicaciones', views.UbicacionViewSet)
+router.register(r'servicios', views.ServicioViewSet)
+
 urlpatterns = [
-    path('agregar/', views.agregar_cabana, name='agregar_cabana'),
-    path('<int:cabana_id>/', views.detalle_cabana, name='detalle_cabana'),
-    path('', views.lista_cabanas, name='lista_cabanas'),
+    path('', include(router.urls)),
 ]

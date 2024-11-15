@@ -3,6 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UsuarioViewSet, PersonaViewSet
 
+
 # Creamos un enrutador para gestionar las URLs automáticamente
 router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)

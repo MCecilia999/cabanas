@@ -1,7 +1,9 @@
 # apps/usuarios/views.py
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import *
 from .models import Usuario, Persona, Arrendador, Cliente
 from .serializers import UsuarioSerializer, PersonaSerializer, ArrendadorSerializer, ClienteSerializer
@@ -25,6 +27,7 @@ class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
     permission_classes = [PersonaPermission]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         if self.request.user.tipo_usuario == 'admin':
@@ -35,6 +38,7 @@ class ArrendadorViewSet(viewsets.ModelViewSet):
     queryset = Arrendador.objects.all()
     serializer_class = ArrendadorSerializer
     permission_classes = [ArrendadorPermission]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         if self.request.user.tipo_usuario == 'admin':
@@ -49,6 +53,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
     permission_classes = [ClientePermission]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         if self.request.user.tipo_usuario == 'admin':
@@ -58,3 +63,11 @@ class ClienteViewSet(viewsets.ModelViewSet):
                 id_cliente__id_usuario=self.request.user
             )
         return Cliente.objects.none()
+
+class CurrentUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        serializer = UsuarioSerializer(request.user)
+        return Response(serializer.data)

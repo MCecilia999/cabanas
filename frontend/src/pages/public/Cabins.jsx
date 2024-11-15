@@ -1,36 +1,34 @@
-// src/pages/public/Cabins.jsx
-import { Link } from 'react-router-dom';  // Añadido import de Link
+import React from 'react';
+import { Card, CardContent } from "../../components/card";
+import { Button } from "../../components/Button";
 
+const PineTreeIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="currentColor"
+    className="text-green-500"
+  >
+    <path d="M12,2L4,12H7L4,18H10V22H14V18H20L17,12H20L12,2Z" />
+  </svg>
+);
 
-export default function Cabins() {
+export default function Component() {
   const cabins = [
     {
       id: 1,
-      name: "Cabaña del Bosque",
-      description: "Perfecta para escapadas románticas",
-      price: "150",
-      capacity: 2
-    },
-    {
-      id: 2,
-      name: "Cabaña Familiar",
-      description: "Ideal para familias grandes",
-      price: "300",
-      capacity: 6
-    },
-    {
-      id: 3,
-      name: "Cabaña del Lago",
-      description: "Vista espectacular al lago",
-      price: "200",
-      capacity: 4
+      name: "Nombre Cabaña",
+      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit et dignissimos con dolores",
+      rating: 5,
+      price: 2464,
+      image: "/api/placeholder/400/300"
     }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-8">Nuestras Cabañas</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="max-w-7xl mx-auto p-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {cabins.map((cabin) => (
           <CabinCard key={cabin.id} cabin={cabin} />
         ))}
@@ -39,28 +37,41 @@ export default function Cabins() {
   );
 }
 
-// Componente auxiliar para las tarjetas de cabañas
 function CabinCard({ cabin }) {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <img
-        src={`/api/placeholder/400/300`}
-        alt={cabin.name}
-        className="w-full h-48 object-cover"
-      />
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{cabin.name}</h3>
-        <p className="text-gray-600 mb-4">{cabin.description}</p>
-        <div className="flex justify-between items-center">
-          <p className="text-lg font-bold">${cabin.price}/noche</p>
-          <Link
-            to={`/cabins/${cabin.id}`}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Ver Detalles
-          </Link>
+    <Card className="overflow-hidden border-0 bg-white shadow-lg rounded-2xl">
+      <CardContent className="p-0">
+        <div className="relative">
+          <img
+            alt={cabin.name}
+            className="h-[200px] w-full object-cover"
+            src={cabin.image}
+          />
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-semibold text-gray-900">{cabin.name}</h3>
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: cabin.rating }).map((_, i) => (
+                  <PineTreeIcon key={i} />
+                ))}
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-4 line-clamp-2">{cabin.description}</p>
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-gray-900">
+                ${cabin.price.toLocaleString()}
+                <span className="text-sm font-normal text-gray-600 ml-1">MXN</span>
+              </div>
+              <a
+                href={`/cabins/${cabin.id}`}
+                className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6 py-2 text-sm"
+              >
+                Reservar Ahora
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

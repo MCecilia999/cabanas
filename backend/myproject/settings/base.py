@@ -13,9 +13,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'corsheaders',
     'rest_framework',
     'apps.usuarios.apps.UsuariosConfig',
+    'apps.cabanas.apps.CabanasConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -129,12 +132,20 @@ REST_FRAMEWORK = {
     ],
 
     'UNAUTHENTICATED_USER': None,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 
 }
 
 def configure_token_view(_):
     from rest_framework_simplejwt.views import TokenObtainPairView
     TokenObtainPairView.permission_classes = []
+    
 
 from django.core.signals import setting_changed
 setting_changed.connect(configure_token_view)

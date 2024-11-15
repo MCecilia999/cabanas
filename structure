@@ -1,74 +1,54 @@
-cabanas/
-├── myproject/                
-│   ├── __init__.py           
-│   ├── settings/             
-│   │   ├── __init__.py
-│   │   ├── base.py           
-│   │   ├── development.py    
-│   │   └── production.py     
-│   ├── urls.py               
-│   ├── wsgi.py               
-│   └── asgi.py               
-├── manage.py                 
-├── requirements.txt          
-├── .env                      
-├── .gitignore                
-├── apps/                     
-│   ├── usuarios/             # App para gestión de usuarios
-│   │   ├── __init__.py
-│   │   ├── admin.py          
-│   │   ├── apps.py           
-│   │   ├── models.py         
-│   │   ├── views.py          
-│   │   ├── urls.py           
-│   │   ├── forms.py          
-│   │   ├── tests.py          
-│   │   ├── templates/        
-│   │   │   └── usuarios/
-│   │   │       └── home.html
-│   │   │       └── login.html
-│   │   │       └── profile.html
-│   │   │       └── registro.html
-│   │   └── static/           
-│   ├── cabanas/              # App para gestión de cabañas
-│   │   ├── __init__.py
-│   │   ├── admin.py          
-│   │   ├── apps.py           
-│   │   ├── models.py         
-│   │   ├── views.py          
-│   │   ├── urls.py           
-│   │   ├── forms.py          
-│   │   ├── tests.py          
-│   │   ├── templates/        
-│   │   │   └── cabanas/
-│   │   │       ├── agregar_cabana.html
-│   │   │       ├── detalle_cabana.html
-│   │   │       └── lista_cabanas.html
-│   │   └── static/           
-│   ├── actividades/          # App para gestión de actividades
-│   │   ├── __init__.py
-│   │   ├── admin.py          
-│   │   ├── apps.py           
-│   │   ├── models.py         
-│   │   ├── views.py          
-│   │   ├── urls.py           
-│   │   ├── forms.py          
-│   │   ├── tests.py          
-│   │   ├── templates/        
-│   │   │   └── actividades/
-│   │   └── static/           
-│   └── reservas/             # App para gestión de reservas
-│       ├── __init__.py
-│       ├── admin.py          
-│       ├── apps.py           
-│       ├── models.py         
-│       ├── views.py          
-│       ├── urls.py           
-│       ├── forms.py          
-│       ├── tests.py          
-│       ├── templates/        
-│       │   └── reservas/
-│       └── static/           
-└── templates/
-    └── base.html
-
+/cabanas
+├── backend                  # Directorio del Backend (Django)
+│   ├── apps                 # Aplicaciones de Django
+│   │   ├── actividades
+│   │   ├── cabanas
+│   │   ├── reservas
+│   │   └── usuarios
+│   │       ├── admin.py
+│   │       ├── apps.py
+│   │       ├── forms.py
+│   │       ├── migrations
+│   │       ├── models.py
+│   │       ├── permissions.py
+│   │       ├── serializers.py
+│   │       ├── signals.py
+│   │       ├── urls.py
+│   │       └── views.py
+│   ├── Dockerfile
+│   ├── fly.toml
+│   ├── manage.py
+│   ├── myproject            # Directorio del proyecto principal de Django
+│   ├── static               # Archivos estáticos
+│   ├── staticfiles          # Archivos estáticos recolectados
+│   ├── templates            # Plantillas HTML
+│   └── venv                 # Entorno virtual de Python
+├── docker-compose.yml       # Configuración de Docker
+├── docker-compose.override.yml
+├── fly.toml                 # Configuración para Fly.io
+├── frontend                 # Directorio del Frontend (React)
+│   ├── build                # Archivos de compilación
+│   ├── Dockerfile
+│   ├── node_modules         # Dependencias de npm
+│   ├── postcss.config.js    # Configuración de PostCSS
+│   ├── public               # Archivos públicos (index.html, etc.)
+│   ├── src                  # Código fuente de la aplicación React
+│   │   ├── App.js
+│   │   ├── components       # Componentes reutilizables de React
+│   │   │   ├── Button.jsx
+│   │   │   ├── Card.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   └── Sidebar.jsx
+│   │   ├── index.js         
+│   │   ├── layouts         
+│   │   │   ├── admin.html       
+│   │   │   └── public.html      
+│   │   ├── pages            
+│   │   │   ├── admin        # Panel administrativo
+│   │   │   └── public       # Páginas públicas
+│   │   ├── reportWebVitals.js
+│   │   ├── services         # Servicios de API
+│   │   │   ├── api
+│   │   │   └── auth
+│   │   └── setupTests.js
+│   ├── tailwind.config.js   # Configuración de Tailwind CSS

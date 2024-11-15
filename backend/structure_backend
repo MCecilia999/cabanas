@@ -1,0 +1,36 @@
+cabanas/
+└── backend/
+    ├── apps/
+    │   ├── actividades/
+    │   ├── cabanas/
+    │   ├── reservas/
+    │   └── usuarios/
+    │       ├── admin.py
+    │       ├── apps.py
+    │       ├── forms.py
+    │       ├── __init__.py
+    │       ├── migrations/
+    │       ├── models.py
+    │       ├── permissions.py
+    │       ├── serializers.py
+    │       ├── signals.py
+    │       ├── urls.py
+    │       └── views.py
+    ├── bd/
+    ├── db.sqlite3
+    ├── Dockerfile
+    ├── fly.toml
+    ├── manage.py
+    ├── myproject/
+    │   ├── asgi.py
+    │   ├── settings/
+    │   │   ├── base.py
+    │   │   ├── development.py
+    │   │   ├── production.py
+    │   ├── urls.py
+    │   └── wsgi.py
+    ├── requirements.txt
+    ├── static/
+    ├── staticfiles/
+    ├── templates/
+    └── venv/
