@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from apps.usuarios.views import CurrentUserView  # Añadimos esta importación
+from apps.usuarios.views import CurrentUserView 
 
 class HealthCheckView(APIView):
     permission_classes = [AllowAny]

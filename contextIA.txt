@@ -1,305 +1,71 @@
-from rest_framework import viewsets, filters, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import *
-from .serializers import *
-from .permissions import IsArrendadorOrReadOnly
+from rest_framework import serializers
+from .models import (
+    Cabana, Ubicacion, Servicio, ImagenCabana, 
+    Resena, DisponibilidadCabana, PoliticaCabana
+)
 
-class CabanaViewSet(viewsets.ModelViewSet):
-    queryset = Cabana.objects.all()
-    permission_classes = [IsArrendadorOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['ubicacion', 'capacidad', 'estado', 'es_destacada']
-    search_fields = ['nombre', 'descripcion', 'ubicacion__nombre']
-    ordering_fields = ['costo_por_noche', 'calificacion_promedio', 'creada_en']
+class UbicacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ubicacion
+        fields = '__all__'
 
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return CabanaListSerializer
-        return CabanaDetailSerializer
+class ServicioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servicio
+        fields = '__all__'
 
-    def perform_create(self, serializer):
-        serializer.save(arrendador=self.request.user.arrendador)
+class ImagenCabanaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImagenCabana
+        fields = ['id', 'imagen', 'es_principal', 'orden', 'titulo']
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
-    def agregar_resena(self, request, pk=None):
-        cabana = self.get_object()
-        serializer = ResenaSerializer(data=request.data)
-        
-        if serializer.is_valid():
-            serializer.save(
-                cabana=cabana,
-                usuario=request.user
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ResenaSerializer(serializers.ModelSerializer):
+    nombre_usuario = serializers.SerializerMethodField()
 
-    @action(detail=True, methods=['get'])
-    def disponibilidad(self, request, pk=None):
-        cabana = self.get_object()
-        fecha_inicio = request.query_params.get('fecha_inicio')
-        fecha_fin = request.query_params.get('fecha_fin')
-        
-        disponibilidad = DisponibilidadCabana.objects.filter(
-            cabana=cabana,
-            fecha__range=[fecha_inicio, fecha_fin]
-        )
-        
-        serializer = DisponibilidadCabanaSerializer(disponibilidad, many=True)
-        return Response(serializer.data)
+    class Meta:
+        model = Resena
+        fields = ['id', 'usuario', 'nombre_usuario', 'calificacion', 
+                 'comentario', 'fecha_estadia', 'creada_en']
+        read_only_fields = ['usuario']
 
-class UbicacionViewSet(viewsets.ModelViewSet):
-    queryset = Ubicacion.objects.all()
-    serializer_class = UbicacionSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    def get_nombre_usuario(self, obj):
+        return f"{obj.usuario.first_name} {obj.usuario.last_name}"
 
-class ServicioViewSet(viewsets.ModelViewSet):
-    queryset = Servicio.objects.all()
-    serializer_class = ServicioSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-# backend/myproject/urls.py
-from django.contrib import admin
-from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
-from apps.usuarios.views import CurrentUserView  # Añadimos esta importación
+class DisponibilidadCabanaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DisponibilidadCabana
+        fields = '__all__'
 
-class HealthCheckView(APIView):
-    permission_classes = [AllowAny]
+class PoliticaCabanaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PoliticaCabana
+        fields = '__all__'
+
+class CabanaDetailSerializer(serializers.ModelSerializer):
+    ubicacion = UbicacionSerializer(read_only=True)
+    servicios = ServicioSerializer(many=True, read_only=True)
+    imagenes = ImagenCabanaSerializer(many=True, read_only=True)
+    resenas = ResenaSerializer(many=True, read_only=True)
+    politicas = PoliticaCabanaSerializer(many=True, read_only=True)
     
-    def get(self, request):
-        return Response("OK")
+    class Meta:
+        model = Cabana
+        fields = '__all__'
+        read_only_fields = ['calificacion_promedio', 'num_resenas', 
+                           'veces_reservada', 'slug']
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/usuarios/', include('apps.usuarios.urls')),
-    path('api/usuarios/me/', CurrentUserView.as_view(), name='current_user'),
-    #path('api/actividades/', include('apps.actividades.urls')),
-    #path('api/cabanas/', include('apps.cabanas.urls')),
-    #path('api/reservas/', include('apps.reservas.urls')),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('health/', HealthCheckView.as_view(), name='health_check'),
-]
+class CabanaListSerializer(serializers.ModelSerializer):
+    imagen_principal = serializers.SerializerMethodField()
+    ubicacion_nombre = serializers.CharField(source='ubicacion.nombre')
+    
+    class Meta:
+        model = Cabana
+        fields = ['id', 'nombre', 'slug', 'descripcion_corta', 'capacidad',
+                 'costo_por_noche', 'calificacion_promedio', 'imagen_principal',
+                 'ubicacion_nombre', 'es_destacada', 'estado']
 
-En base a mi backend ayudame a construir un componente que me permita agregar una cabaña
-
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './services/auth/AuthContext';
-import PrivateRoute from './services/auth/PrivateRoute';
-import PublicLayout from './layouts/PublicLayout';
-import AdminLayout from './layouts/AdminLayout';
-import Home from './pages/public/Home';
-import Cabins from './pages/public/Cabins';
-import CabinDetail from './pages/public/CabinDetail';
-import LoginPage from './pages/public/auth/LoginScreen';
-import RegisterPage from './pages/public/auth/RegisterScreen';
-import Dashboard from './pages/admin/Dashboard';
-import ManageCabins from './pages/admin/ManageCabins';
-import Users from './pages/admin/Users';
-
-const App = () => {
-  return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<PublicLayout />}>
-            <Route index element={<Home />} />
-            <Route path="cabins" element={<Cabins />} />
-            <Route path="cabins/:id" element={<CabinDetail />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-          </Route>
-
-          {/* Admin routes */}
-          <Route path="/admin" element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
-            <Route index element={<Dashboard />} />
-            <Route path="cabins" element={<ManageCabins />} />
-            <Route path="users" element={<Users />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
-    </Router>
-  );
-};
-
-export default App;
-
-import { Link, useLocation } from 'react-router-dom';
-
-const AdminNavbar = () => {
-  const location = useLocation();
-
-  return (
-    <nav className="bg-gray-800 py-4">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/admin" className="text-white font-bold text-xl">
-              Admin Panel
-            </Link>
-          </div>
-          <div className="ml-10 flex items-baseline space-x-4">
-            <Link
-              to="/admin/"
-              className={`${
-                location.pathname === '/admin/'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              } px-3 py-2 rounded-md text-sm font-medium`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/admin/users"
-              className={`${
-                location.pathname === '/admin/users'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              } px-3 py-2 rounded-md text-sm font-medium`}
-            >
-              Users
-            </Link>
-            <Link
-              to="/admin/cabins"
-              className={`${
-                location.pathname === '/admin/cabins'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              } px-3 py-2 rounded-md text-sm font-medium`}
-            >
-              Cabins
-            </Link>
-            <Link
-              to="/admin/bookings"
-              className={`${
-                location.pathname === '/admin/bookings'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              } px-3 py-2 rounded-md text-sm font-medium`}
-            >
-              Bookings
-            </Link>
-            <Link
-              to="/logout"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Logout
-            </Link>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-};
-
-export default AdminNavbar;
-
-utiliza mi LoginScreen como ejemplo para manejar las peticiones
-
-import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../../../services/auth/AuthContext';
-import AuthService from '../../../services/auth/AuthService';
-
-const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); 
-  const { setIsAuthenticated, setCurrentUser } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await AuthService.login(email, password);
-      const userData = await AuthService.getCurrentUser();
-
-      setCurrentUser(userData);
-      setIsAuthenticated(true);
-      navigate('/admin', { replace: true });
-    } catch (err) {
-      console.error('Login error:', err);
-      setError('Login failed. Please check your credentials and try again.');
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">Email</label>
-              <input
-                id="email"
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
-        <div className="text-center">
-          <Link to="/register" className="text-indigo-600 hover:text-indigo-500">
-            Don't have an account? Register
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default LoginScreen;
-
-
-
-
-
-
-
-
-En base a mi backend ayudame a construir un componente que me permita agregar una cabaña
-
-
-utiliza mi LoginScreen como ejemplo para manejar las peticiones
+    def get_imagen_principal(self, obj):
+        imagen_principal = obj.imagenes.filter(es_principal=True).first()
+        if imagen_principal:
+            return imagen_principal.imagen.url
+        return None
